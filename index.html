@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Festival Start (Blue)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: #00ffff;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px #00ffff;
+    }
+
+    .loading-bar {
+      margin: 1.5rem 0;
+      width: 60%;
+      height: 25px;
+      background: #222;
+      border: 2px solid #00ffff;
+      position: relative;
+    }
+
+    .loading-fill {
+      background: #00ffff;
+      height: 100%;
+      width: 10%;
+      animation: loading 3s infinite;
+    }
+
+    @keyframes loading {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+
+    .start-btn {
+      background: #00ffff;
+      color: #000;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 1rem;
+      box-shadow: 0 0 15px #00ffff;
+    }
+
+    .start-btn:hover {
+      background: #00cccc;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+  <div class="title">SHAURA CRIMINAL CASE</div>
+  <div class="title">Start</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+  <div style="margin-bottom: 1rem;">10%</div>
+  <button class="start-btn" onclick="goToNext()">START</button>
+</div>
+
+<script>
+  function goToNext() {
+    window.location.href = 'criminal-blue.html'; // Arahkan ke versi biru halaman kedua
+  }
+
+  // Matrix Blue
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+
+  const letters = "01";
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = Array.from({ length: columns }).fill(1);
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#00ffff";
+    ctx.font = fontSize + "px monospace";
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrix, 33);
+</script>
+
+</body>
+</html>

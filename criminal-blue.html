@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Criminal File - Blue</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      background: black;
+      color: #00ffff;
+      overflow-y: auto;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      background-color: rgba(0, 0, 0, 0.85);
+      border: 2px solid #00ffff;
+      margin-top: 3rem;
+      margin-bottom: 5rem;
+    }
+
+    h2 {
+      border-bottom: 1px solid #00ffff;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .top-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .top-info img {
+      width: 200px;
+      border: 2px solid #00ffff;
+    }
+
+    .details span {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .section {
+      margin-top: 2rem;
+    }
+
+    .fingerprints {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+    }
+
+    .fingerprints img {
+      width: 100%;
+      cursor: pointer;
+      border: 1px solid #00ffff;
+    }
+
+    /* Popup */
+    .popup {
+      position: absolute;
+      width: 300px;
+      background: rgba(0, 0, 0, 0.95);
+      border: 2px solid #00ffff;
+      z-index: 9999;
+      color: #00ffff;
+      box-shadow: 0 0 20px #00ffff;
+    }
+
+    .popup-header {
+      background: #002a2a;
+      padding: 0.5rem;
+      cursor: move;
+      font-weight: bold;
+      border-bottom: 1px solid #00ffff;
+    }
+
+    .popup-close {
+      float: right;
+      cursor: pointer;
+      color: #00ffff;
+    }
+
+    .popup-content img {
+      width: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+  <h2>TOP SECRET FILE</h2>
+  <div class="top-info">
+    <img src="ryujin.jpg" alt="Agent Photo">
+    <div class="details">
+      <span><strong>Name:</strong> SHAURA </span>
+      <span><strong>Codename:</strong> artred</span>
+      <span><strong>File No:</strong> 001587</span>
+      <span><strong>Agent Type:</strong> SECRET</span>
+      <span><strong>Nationality:</strong> KOREA</span>
+      <span><strong>Birth Year:</strong> 2001</span>
+      <span><strong>Status:</strong> N/A</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Appearance</h3>
+    <span><strong>Height:</strong> 1.64"</span>
+    <span><strong>Weight:</strong> 49 KG</span>
+    <span><strong>Hair:</strong> BLACK</span>
+    <span><strong>Eyes:</strong> DARK BROWN</span>
+  </div>
+
+  <div class="section">
+    <h3>Fingerprints</h3>
+    <div class="fingerprints">
+      <img src="sidik1.jpg" onclick="createPopup('crimina11.jpg', 'Thumb')">
+      <img src="sidik2.jpg" onclick="createPopup('criminal12.jpg', 'Index')">
+      <img src="sidik3.jpg" onclick="createPopup('crimina13.jpg', 'Middle')">
+      <img src="sidik4.jpg" onclick="createPopup('criminal14.jpg', 'Ring')">
+      <img src="sidik5.jpg" onclick="createPopup('criminal15.jpg', 'Little')">
+    </div>
+  </div>
+</div>
+
+<script>
+  function createPopup(src, label) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.style.top = Math.random() * 200 + 100 + 'px';
+    popup.style.left = Math.random() * 300 + 100 + 'px';
+
+    popup.innerHTML = `
+      <div class="popup-header" onmousedown="startDrag(event, this.parentElement)">
+        ${label} Finger
+        <span class="popup-close" onclick="this.parentElement.parentElement.remove()">✕</span>
+      </div>
+      <div class="popup-content">
+        <img src="${src}" alt="${label}">
+      </div>
+    `;
+    document.body.appendChild(popup);
+  }
+
+  function startDrag(e, popup) {
+    e.preventDefault();
+    let shiftX = e.clientX - popup.getBoundingClientRect().left;
+    let shiftY = e.clientY - popup.getBoundingClientRect().top;
+
+    function moveAt(pageX, pageY) {
+      popup.style.left = pageX - shiftX + 'px';
+      popup.style.top = pageY - shiftY + 'px';
+    }
+
+    function onMouseMove(e) {
+      moveAt(e.pageX, e.pageY);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    popup.onmouseup = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      popup.onmouseup = null;
+    };
+  }
+
+  // Matrix effect blue
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+
+  const letters = "01";
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = Array.from({ length: columns }).fill(1);
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#00ffff";
+    ctx.font = fontSize + "px monospace";
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrix, 33);
+</script>
+
+</body>
+</html>
